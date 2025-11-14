@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 · 抖小家电商员工工作台</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2a6cff;
+            --primary-dark: #1a5ae8;
+            --secondary: #00c9ff;
+            --dark: #2b2f36;
+            --gray: #6c757d;
+            --muted: #8a93a3;
+            --light: #f5f9ff;
+            --success: #0a7a55;
+            --warning: #a76313;
+            --danger: #d93025;
+            --radius: 12px;
+            --shadow: 0 8px 24px rgba(0,0,0,.12);
+            --t: all .25s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: 'PingFang SC', 'Microsoft YaHei', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+            color: var(--dark);
+            background: var(--light);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
+
+        .login-container {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr 1.6fr; /* 黄金比例调整 */
+        }
+
+        /* 左侧海报区域 */
+        .login-poster {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            color: white;
+        }
+
+        .poster-content {
+            max-width: 400px;
+            z-index: 2;
+            position: relative;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .poster-content h1 {
+            font-size: 32px;
+            font-weight: 900;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            animation: textGlow 3s infinite alternate;
+        }
+
+        .poster-content p {
+            font-size: 16px;
+            opacity: 0.9;
+            animation: fadeIn 1.5s ease-out 0.5s both;
+        }
+
+        .poster-graphic {
+            position: absolute;
+            bottom: -80px;
+            right: -80px;
+            width: 400px;
+            height: 400px;
+            opacity: 0.15;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+            border-radius: 50%;
+            animation: pulse 4s infinite alternate;
+        }
+
+        .floating-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+        }
+
+        .floating-element {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+        }
+
+        .floating-element:nth-child(1) {
+            width: 60px;
+            height: 60px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .floating-element:nth-child(2) {
+            width: 100px;
+            height: 100px;
+            top: 60%;
+            left: 80%;
+            animation-delay: 2s;
+        }
+
+        .floating-element:nth-child(3) {
+            width: 50px;
+            height: 50px;
+            top: 80%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+
+        .floating-element:nth-child(4) {
+            width: 80px;
+            height: 80px;
+            top: 30%;
+            left: 70%;
+            animation-delay: 6s;
+        }
+
+        /* 右侧表单区域 */
+        .login-form-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            background: #fff;
+        }
+
+        .login-form {
+            width: 100%;
+            max-width: 450px;
+            background: #fff;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 30px;
+            animation: slideInRight 0.8s ease-out;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            box-shadow: 0 4px 12px rgba(42,108,255,.25);
+            margin: 0 auto 15px;
+            font-size: 24px;
+            animation: bounce 1s ease-out;
+        }
+
+        .form-header h2 {
+            font-weight: 900;
+            color: var(--dark);
+            margin-bottom: 8px;
+        }
+
+        .form-header p {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 700;
+            color: var(--dark);
+            font-size: 14px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e6ecff;
+            border-radius: 8px;
+            background: #f8faff;
+            font-size: 14px;
+            transition: var(--t);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(42,108,255,.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 12px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 44px;
+            border-radius: 999px;
+            font-weight: 800;
+            cursor: pointer;
+            border: none;
+            transition: var(--t);
+            padding: 0 20px;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: #fff;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(42,108,255,.3);
+        }
+
+        .btn-outline {
+            border: 2px solid var(--primary);
+            background: #fff;
+            color: var(--primary);
+            white-space: nowrap;
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .btn-outline:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .login-footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .login-footer a {
+            color: var(--muted);
+            text-decoration: none;
+            transition: var(--t);
+        }
+
+        .login-footer a:hover {
+            color: var(--primary);
+        }
+
+        .footer-separator {
+            margin: 0 8px;
+        }
+
+        /* 验证码提示框 */
+        .code-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .code-modal-content {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,.2);
+            width: 400px;
+            max-width: 90%;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        .code-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 24px;
+            border-bottom: 1px solid #eef3ff;
+        }
+
+        .code-modal-header h3 {
+            font-weight: 900;
+            color: #101424;
+        }
+
+        .code-modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--muted);
+            transition: var(--t);
+        }
+
+        .code-modal-close:hover {
+            color: var(--dark);
+        }
+
+        .code-modal-body {
+            padding: 24px;
+            text-align: center;
+        }
+
+        .code-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin: 0 auto 20px;
+        }
+
+        .code-icon.success {
+            background: linear-gradient(135deg, var(--success), #30d158);
+        }
+
+        .code-icon.error {
+            background: linear-gradient(135deg, var(--danger), #ff6b60);
+        }
+
+        .code-icon.info {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        .code-title {
+            font-weight: 900;
+            font-size: 20px;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+
+        .code-message {
+            color: var(--muted);
+            margin-bottom: 20px;
+        }
+
+        .code-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        /* 动画定义 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 0.9;
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 0.15;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.2;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0.15;
+            }
+        }
+
+        @keyframes textGlow {
+            0% {
+                text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            }
+            100% {
+                text-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.6);
+            }
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            25% {
+                transform: translate(20px, -20px) rotate(90deg);
+            }
+            50% {
+                transform: translate(0, -40px) rotate(180deg);
+            }
+            75% {
+                transform: translate(-20px, -20px) rotate(270deg);
+            }
+            100% {
+                transform: translate(0, 0) rotate(360deg);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 992px) {
+            .login-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .login-poster {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .login-form-container {
+                padding: 20px;
+            }
+            
+            .login-form {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <!-- 左侧海报区域 -->
+        <div class="login-poster">
+            <div class="floating-elements">
+                <div class="floating-element"></div>
+                <div class="floating-element"></div>
+                <div class="floating-element"></div>
+                <div class="floating-element"></div>
+            </div>
+            <div class="poster-content">
+                <h1>抖小家电商</h1>
+                <p>以创造助价值，用灵感燃梦想<br>聚你我之力，赴明日之约</p>
+            </div>
+            <div class="poster-graphic"></div>
+        </div>
+        
+        <!-- 右侧表单区域 -->
+        <div class="login-form-container">
+            <div class="login-form">
+                <div class="form-header">
+                    <div class="logo">抖</div>
+                    <h2>抖小家电商 · 员工工作台</h2>
+                    <p>请使用手机验证码登录</p>
+                </div>
+                
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="phone">手机号码</label>
+                        <input type="tel" id="phone" class="form-control" placeholder="请输入11位手机号" maxlength="11" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="code">验证码</label>
+                        <div class="form-row">
+                            <input type="text" id="code" class="form-control" placeholder="请输入6位验证码" maxlength="6" required>
+                            <button type="button" class="btn btn-outline" id="sendCode">获取验证码</button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary" id="loginBtn">登录</button>
+                    </div>
+                </form>
+                
+                <div class="login-footer">
+                    <a href="https://beian.miit.gov.cn/" target="_blank">© 2025 杭州余杭抖小家电商工作室</a>
+                    <span class="footer-separator">|</span>
+                    <a href="https://beian.miit.gov.cn/" target="_blank">浙ICP备2025205417号</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 验证码提示框 -->
+    <div class="code-modal" id="codeModal">
+        <div class="code-modal-content">
+            <div class="code-modal-header">
+                <h3 id="modalTitle">提示</h3>
+                <button class="code-modal-close" id="codeModalClose">×</button>
+            </div>
+            <div class="code-modal-body">
+                <div class="code-icon" id="modalIcon">
+                    <i class="fas fa-info-circle"></i>
+                </div>
+                <div class="code-title" id="modalSubtitle">提示信息</div>
+                <div class="code-message" id="modalMessage">这是一条提示信息</div>
+                <div class="code-actions">
+                    <button class="btn btn-primary" id="closeCodeModal">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const phoneInput = document.getElementById('phone');
+            const codeInput = document.getElementById('code');
+            const sendCodeBtn = document.getElementById('sendCode');
+            const loginForm = document.getElementById('loginForm');
+            const loginBtn = document.getElementById('loginBtn');
+            const codeModal = document.getElementById('codeModal');
+            const codeModalClose = document.getElementById('codeModalClose');
+            const closeCodeModalBtn = document.getElementById('closeCodeModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalSubtitle = document.getElementById('modalSubtitle');
+            const modalMessage = document.getElementById('modalMessage');
+            const modalIcon = document.getElementById('modalIcon');
+            
+            // 演示用固定手机号和验证码
+            const DEMO_PHONE = '13800000000';
+            const DEMO_CODE = '123456';
+            
+            let countdown = 0;
+            let timer = null;
+            
+            // 开始倒计时
+            function startCountdown() {
+                countdown = 60;
+                sendCodeBtn.disabled = true;
+                sendCodeBtn.textContent = `重新获取(${countdown}s)`;
+                
+                timer = setInterval(() => {
+                    countdown--;
+                    sendCodeBtn.textContent = `重新获取(${countdown}s)`;
+                    
+                    if (countdown <= 0) {
+                        clearInterval(timer);
+                        sendCodeBtn.disabled = false;
+                        sendCodeBtn.textContent = '获取验证码';
+                    }
+                }, 1000);
+            }
+            
+            // 发送验证码
+            sendCodeBtn.addEventListener('click', function() {
+                const phone = phoneInput.value.trim();
+                
+                if (!phone) {
+                    showCodeModal('输入错误', '请输入手机号', 'error');
+                    return;
+                }
+                
+                if (phone !== DEMO_PHONE) {
+                    showCodeModal('账号不存在', '此账号不存在或已被停用，请联系公司处理', 'error');
+                    return;
+                }
+                
+                // 模拟发送验证码
+                sessionStorage.setItem('login_code_' + phone, DEMO_CODE);
+                showCodeModal('验证码已发送', '验证码已发送至您的手机，请注意查收', 'info');
+                
+                startCountdown();
+            });
+            
+            // 显示验证码弹窗
+            function showCodeModal(title, message, type = 'info') {
+                modalTitle.textContent = title;
+                modalSubtitle.textContent = title;
+                modalMessage.textContent = message;
+                
+                // 设置图标样式
+                modalIcon.className = 'code-icon';
+                if (type === 'error') {
+                    modalIcon.classList.add('error');
+                    modalIcon.innerHTML = '<i class="fas fa-exclamation-circle"></i>';
+                } else if (type === 'info') {
+                    modalIcon.classList.add('info');
+                    modalIcon.innerHTML = '<i class="fas fa-info-circle"></i>';
+                } else {
+                    modalIcon.classList.add('success');
+                    modalIcon.innerHTML = '<i class="fas fa-check-circle"></i>';
+                }
+                
+                codeModal.style.display = 'flex';
+            }
+            
+            // 关闭验证码弹窗
+            function closeCodeModal() {
+                codeModal.style.display = 'none';
+            }
+            
+            // 登录处理
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const phone = phoneInput.value.trim();
+                const code = codeInput.value.trim();
+                
+                if (!phone) {
+                    showCodeModal('输入错误', '请输入手机号', 'error');
+                    return;
+                }
+                
+                if (!code) {
+                    showCodeModal('输入错误', '请输入验证码', 'error');
+                    return;
+                }
+                
+                // 演示环境验证
+                if (phone !== DEMO_PHONE) {
+                    showCodeModal('账号不存在', '此账号不存在或已被停用，请联系公司处理', 'error');
+                    return;
+                }
+                
+                if (code !== DEMO_CODE) {
+                    showCodeModal('验证码错误', '您输入的验证码不正确，请重新输入', 'error');
+                    return;
+                }
+                
+                // 登录成功 - 直接跳转，不显示提示
+                sessionStorage.setItem('loggedIn', 'true');
+                localStorage.setItem('userProfile', JSON.stringify({
+                    name: '张三',
+                    role: '客服主管',
+                    phone: phone
+                }));
+                
+                // 跳转到dashboard页面
+                window.location.href = 'dashboard.html';
+            });
+            
+            // 关闭验证码弹窗
+            codeModalClose.addEventListener('click', closeCodeModal);
+            closeCodeModalBtn.addEventListener('click', closeCodeModal);
+            
+            // 点击模态框外部关闭
+            window.addEventListener('click', function(e) {
+                if (e.target === codeModal) {
+                    closeCodeModal();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>登录 · 代理商工作台</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{ --primary:#2a6cff; --secondary:#00c9ff; --dark:#1d2230; --muted:#8a93a3; --shadow:0 10px 30px rgba(0,0,0,.15); }
+*{box-sizing:border-box;margin:0;padding:0;} html,body{height:100%;}
+body{font-family:'PingFang SC','Microsoft YaHei',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f5f9ff;color:#1d2230;}
+.wrap{min-height:100vh;display:grid;grid-template-columns:1.2fr 1fr;}
+/* 左侧海报区域样式 */
+.poster{
+  position:relative;overflow:hidden;background:linear-gradient(135deg,#102a88 0%,#2a6cff 50%,#00c9ff 100%);
+  display:flex;align-items:center;justify-content:center;color:#fff;padding:40px;
+}
+.poster-inner{max-width:560px;animation: fadeInUp 1.2s ease-out;}
+.poster h1{font-size:40px;line-height:1.25;margin-bottom:10px;font-weight:900;white-space:pre-line;animation: textGlow 3s ease-in-out infinite alternate;}
+.poster p{opacity:.95;font-size:16px;}
+.poster svg{position:absolute;inset:auto -80px -80px auto;width:560px;height:auto;opacity:.18;animation: float 6s ease-in-out infinite;}
+
+/* 动画效果 */
+@keyframes fadeInUp {
+  from { opacity:0; transform:translateY(30px); }
+  to { opacity:1; transform:translateY(0); }
+}
+@keyframes textGlow {
+  from { text-shadow:0 0 20px rgba(255,255,255,0.3); }
+  to { text-shadow:0 0 30px rgba(255,255,255,0.6); }
+}
+@keyframes float {
+  0%, 100% { transform:translateY(0px) rotate(0deg); }
+  50% { transform:translateY(-20px) rotate(5deg); }
+}
+/* 右侧表单区域样式 */
+.form{background:#fff;display:flex;align-items:center;justify-content:center;padding:40px;position:relative;}
+.panel{width:100%;max-width:420px;background:#fff;border-radius:16px;box-shadow:var(--shadow);padding:26px;}
+.brand-mini{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.brand-mini .logo{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;background:linear-gradient(135deg,#2a6cff,#00c9ff);box-shadow:0 4px 12px rgba(42,108,255,.25);}
+.brand-mini .name{font-weight:900;color:#2a6cff;}
+.form-row{margin-bottom:12px;}
+.form-row label{display:block;margin-bottom:6px;font-weight:700;}
+.form-row input{width:100%;padding:12px;border:1px solid #e6ecff;border-radius:10px;font-size:14px;}
+.row-inline{display:grid;grid-template-columns:1fr 130px;gap:8px;align-items:end;}
+.btn{display:inline-flex;align-items:center;justify-content:center;height:42px;border-radius:10px;font-weight:800;cursor:pointer;border:none;transition:all .25s ease;}
+.btn-primary{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(42,108,255,.35);}
+.btn-outline{border:2px solid var(--primary);background:#fff;color:#2a6cff;}
+@media (max-width: 980px){ .wrap{grid-template-columns:1fr;} .poster{display:none;} }
+
+/* 备案信息样式 */
+.footer-links{
+  position:absolute;
+  bottom:20px;
+  left:0;
+  right:0;
+  text-align:center;
+  font-size:12px;
+  color:var(--muted);
+  padding:0 20px;
+}
+.footer-links a{
+  color:var(--muted);
+  text-decoration:none;
+  transition:color .25s ease;
+}
+.footer-links a:hover{
+  color:var(--primary);
+}
+.footer-links span{
+  margin:0 8px;
+  color:#e6ecff;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <!-- 左侧大海报：替换为你的文案 -->
+  <div class="poster">
+    <div class="poster-inner">
+      <h1>点滴星辰，汇聚苍茫星河
+每一位代理，都可能成为璀璨的明星</h1>
+    </div>
+    <svg viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
+      <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#bcd6ff"/></linearGradient></defs>
+      <circle cx="300" cy="300" r="260" fill="url(#g)"/>
+    </svg>
+  </div>
+
+  <!-- 右侧登录表单：去掉说明文字，预填固定手机号/验证码 -->
+  <div class="form">
+    <div class="panel">
+      <div class="brand-mini">
+        <div class="logo">抖</div>
+        <div class="name">抖小家电商 · 代理商工作台</div>
+      </div>
+
+      <div class="form-row">
+        <label>手机号码</label>
+        <input type="tel" id="phone" placeholder="请输入 11 位手机号" maxlength="11">
+      </div>
+
+      <div class="form-row row-inline">
+        <div>
+          <label>验证码</label>
+          <input type="text" id="code" placeholder="请输入 6 位验证码" maxlength="6">
+        </div>
+        <button class="btn btn-outline" id="sendCode">获取验证码</button>
+      </div>
+
+      <div class="form-row">
+        <button class="btn btn-primary" id="loginBtn" style="width:100%;">登录工作台</button>
+      </div>
+    </div>
+    
+    <!-- 备案信息 -->
+    <div class="footer-links">
+      <a href="https://beian.miit.gov.cn/" target="_blank">© 2025 杭州余杭抖小家电商工作室</a>
+      <span>|</span>
+      <a href="https://beian.miit.gov.cn/" target="_blank">浙ICP备2025205417号</a>
+    </div>
+  </div>
+</div>
+
+<script>
+// 短信验证码登录（演示）：固定手机号与验证码
+(function(){
+  const phoneEl=document.getElementById('phone');
+  const codeEl=document.getElementById('code');
+  const sendBtn=document.getElementById('sendCode');
+  const loginBtn=document.getElementById('loginBtn');
+
+  const FIX_PHONE = '13800000000';   // 固定手机号
+  const FIX_CODE  = '123456';        // 固定验证码
+
+  let countdown=0, timer=null;
+  function startCountdown(){
+    countdown=60; sendBtn.disabled=true; sendBtn.textContent='重新获取(60s)';
+    timer=setInterval(()=>{
+      countdown-=1; sendBtn.textContent='重新获取('+countdown+'s)';
+      if(countdown<=0){ clearInterval(timer); sendBtn.disabled=false; sendBtn.textContent='获取验证码'; }
+    },1000);
+  }
+
+  // 点击"获取验证码"：检查手机号是否为代理商
+  sendBtn.addEventListener('click', function(){
+    const p=phoneEl.value.trim();
+    if(p!==FIX_PHONE){ 
+      alert('未查询到代理商信息，请联系工作人员'); 
+      return; 
+    }
+    sessionStorage.setItem('login_code_'+p, FIX_CODE);
+    alert('验证码已发送（演示）：' + FIX_CODE);
+    startCountdown();
+  });
+
+  // 登录按钮：校验手机号与验证码是否匹配固定值
+  loginBtn.addEventListener('click', function(){
+    const p=phoneEl.value.trim();
+    const c=codeEl.value.trim();
+    
+    // 手机号验证
+    if(!p){ alert('请输入手机号码'); return; }
+    if(!/^1[3-9]\d{9}$/.test(p)){ alert('请输入正确的手机号码'); return; }
+    
+    // 验证码验证
+    if(!c){ alert('请输入验证码'); return; }
+    if(c!==FIX_CODE){ alert('验证码错误，请重新输入'); return; }
+    
+    // 写入登录态并按 redirect 回跳
+    sessionStorage.setItem('loggedIn','true');
+    localStorage.setItem('profile', JSON.stringify({name:'代理商', phone:p}));
+    sessionStorage.setItem('profile', JSON.stringify({name:'代理商', phone:p}));
+    try{
+      const usp = new URLSearchParams(location.search);
+      const redirect = usp.get('redirect');
+      let target = redirect && redirect.trim();
+      if(!target){
+        const ref = document.referrer || '';
+        target = (!ref || ref.includes('Login.html')) ? 'Projects.html' : ref;
+      }
+      location.href = target;
+    }catch(_){
+      
+    // === 登录成功后回跳：优先 ?redirect，其次 document.referrer，最后兜底到 Projects.html ===
+    try{
+      const usp = new URLSearchParams(location.search);
+      let target = usp.get('redirect');
+      if(target){ try{ target = decodeURIComponent(target); }catch(_){} }
+      if(!target || !target.trim()){
+        const ref = document.referrer || '';
+        target = (ref && !ref.includes('Login.html')) ? ref : 'Projects.html';
+      }
+      location.href = target;
+    }catch(_){
+      location.href = 'Projects.html';
+    }
+    
+    }
+  });
+})();
+</script>
+</body>
+</html>
